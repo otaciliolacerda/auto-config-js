@@ -1,29 +1,34 @@
 # auto-config-js
 
-[![](https://img.shields.io/badge/Github%20Discussions%20%26%20Support-Chat%20now!-blue)](https://github.com/otaciliolacerda/auto-config-js/discussions)
+[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 [![](https://img.shields.io/badge/Licence-MIT-green.svg)](https://github.com/otaciliolacerda/auto-config-js/blob/master/LICENSE)
 
-Hierarchical NodeJS configuration with Yaml files, environment variables and config merging. Much of this library was inspired on [SpringBoot Environment API](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/env/Environment.html).
+Hierarchical NodeJS configuration with Yaml files, environment variables and config merging. Much of this library was inspired on [SpringBoot Externalized Configuration](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config).
+
+Usually the configuration files are used externalize default configuration values that can be overridden by system environment variables. Storing configuration in the environment separate from code is based on [The Twelve-Factor App](http://12factor.net/config) methodology.
+
+This lib has a single dependency: [js-yaml](https://github.com/nodeca/js-yaml)
+
+## Quick Features
+* Hierarchical configuration
+* Configuration tree is available as a javascript object
+* Relaxed binding of System Variables
 
 ## Install
-```bash
-# with npm
-yarn add auto-config-js
 
-# or with npm
+With yarn:
+```bash
+yarn add auto-config-js
+```
+
+With npm: 
+```bash 
 npm install auto-config-js
 ```
 
 ## Usage
 
-As early as possible in your application, require and configure `auto-config-js`.
-
-```javascript
-const config = require('auto-config-js').autoConfig()
-```
-
-Create a `environmentName.yaml` file in the current directory of your project. Add environment-specific variables on new lines in the form of ``. For example:
-
+Create a YAML file named `app.config.yaml` in your application current directory:
 ```yaml
 application: 'my-app'
 database: 
@@ -31,13 +36,128 @@ database:
   port: 8080
 ```
 
-Now the `config` constant contains the configuration you defined in your `environmentName.yaml` file.
+As early as possible in your application, require and configure `auto-config-js`.
+```javascript
+const config = require('auto-config-js').autoConfig()
+```
+
+The `autoConfig` will read the YAML file. from the current directory and load the configuration in a javascript object. Now the `config` constant contains the configuration you defined in your YAML file.
+
 ```javascript
 const myAppName = config.application;
 const db = require('db');
 db.connect({
   host: config.database.host,
   port: config.database.port,
+})
+```
+
+## Configuration file
+
+#### Content Format
+
+The file content format must be a valid [YAML](https://yaml.org/) format. 
+
+YAML is a superset of JSON and, as such, is a convenient format for specifying hierarchical configuration data in a more human-readable way.
+
+> ⚠️ The use of `kebap-case` is supported but not recommended because it requires the use of [Bracket notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_Accessors) when using the [configuration object](#access-to-the-configuration).
+
+#### Name Convention
+
+Configuration files are named using the following convention: 
+```
+app-<PROFILE>.config.yaml
+```
+. The `<PROFILE>` placeholder uses by default the `NODE_ENV` value. It can be overridden by passing the optional configuration parameter to the `autoConfig` function (check [API](#api)).
+
+If no profile specific file is found, `auto-config-js` will do a last attempt and try to load `app.config.yaml`.
+
+#### Location
+
+`auto-config-js` by default tries to load the configuration files from:
+1. From `${configDir}/` directory (check [API](#api))
+1. A `/config` sub-directory of the current directory
+1. The current directory
+
+The list is ordered by precedence (properties defined in locations higher in the list override those defined in lower locations).
+
+
+#### Type conversion
+
+The type conversion is controlled by [js-yaml](https://github.com/nodeca/js-yaml). This lib uses the `safeLoad` function with the default schema (all supported YAML types, without unsafe ones). 
+
+If necessary a few internals can be exposed in the future for further configuration and JSON support.
+
+## Access to the configuration
+
+The configuration will be available to the application as a javascript object, having the same hierarchical structure defined in the YAML file. This means the following configuration:
+
+```yaml
+oauth2.client.id: myUser
+session:
+  cookie:
+    maxAge: 86400000
+    secure: true
+```
+
+Can be access like:
+
+```yaml
+config.oauth2.client.id
+session.cookie.maxAge
+session.cookie.secure
+```
+
+## Relaxed Binding
+
+Most operating systems impose strict rules around the names that can be used for environment variables. For example, Linux shell variables can contain only letters (`a` to `z` or `A` to `Z`), numbers (`0` to `9`) or the underscore character (`_). By convention, Unix shell variables will also have their names in UPPERCASE.
+
+`auto-config-js` relaxed binding rules are, as much as possible, designed to be compatible with these naming restrictions.
+
+To convert a property name in the canonical-form to an environment variable name you can follow these rules:
+
+* Replace dots (.) with underscores (_).
+* Remove any dashes (-).
+* Convert to uppercase.
+
+For example, we could bind the following properties with the environment variables:
+
+Property | Environment variable
+------------ | -------------
+`oauth.client-id` | `OAUTH_CLIENTID`
+`oauth.clientId` | `OAUTH_CLIENTID`
+
+> ⚠️️ Underscores cannot be used to replace the dashes in property names. If you attempt to use OAUTH_CLIENT_ID with the example above, no value will be bound.
+
+## API
+
+## autoConfig
+
+```javascript
+const config = autoConfig({
+  profile,
+  configDirectory, 
+})
+```
+
+### Parameters
+- `profile: String`
+  - Optional
+  - Name of the profile to be loaded
+  - Default to the value found in `NODE_ENV`
+- `configDirectory: String`
+  - Optional
+  - The relative or absolute path to the directory where the configuration files are located.
+  - Read [Location](#location) for default behaviour
+
+### Returns
+- Plain javascript object
+
+### Example:
+```javascript
+const config = require('auto-config-js').autoConfig({
+  profile: 'development',
+  configDirectory: './config/'
 })
 ```
 
