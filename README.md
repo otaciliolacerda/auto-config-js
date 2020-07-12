@@ -5,7 +5,7 @@
 
 Hierarchical NodeJS configuration with Yaml files, environment variables and config merging. Much of this library was inspired on [SpringBoot Externalized Configuration](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config).
 
-Usually the configuration files are used externalize default configuration values that can be overridden by system environment variables. Storing configuration in the environment separate from code is based on [The Twelve-Factor App](http://12factor.net/config) methodology.
+Usually the configuration files are used externalize default configuration values that can be overridden by system environment variables. Storing configuration in the environment separate from code is based on [The Twelve-Factor App](https://12factor.net/config) methodology.
 
 This lib has a single dependency: [js-yaml](https://github.com/nodeca/js-yaml)
 
@@ -38,7 +38,7 @@ database:
 
 As early as possible in your application, require and configure `auto-config-js`.
 ```javascript
-const config = require('auto-config-js').autoConfig()
+const config = require('auto-config-js').init()
 ```
 
 The `autoConfig` will read the YAML file. from the current directory and load the configuration in a javascript object. Now the `config` constant contains the configuration you defined in your YAML file.
@@ -131,16 +131,16 @@ Property | Environment variable
 
 ## API
 
-## autoConfig
+### init
 
 ```javascript
-const config = autoConfig({
+autoConfig.init({
   profile,
   configDirectory, 
-})
+});
 ```
 
-### Parameters
+#### Parameters
 - `profile: String`
   - Optional
   - Name of the profile to be loaded
@@ -150,15 +150,41 @@ const config = autoConfig({
   - The relative or absolute path to the directory where the configuration files are located.
   - Read [Location](#location) for default behaviour
 
-### Returns
-- Plain javascript object
+#### Return
+- Nothing
 
-### Example:
+#### Example:
 ```javascript
-const config = require('auto-config-js').autoConfig({
+const autoConfig = require('auto-config-js');
+autoConfig.init({
   profile: 'development',
   configDirectory: './config/'
-})
+});
+```
+
+### getConfig
+
+```javascript
+autoConfig.init({
+  profile,
+  configDirectory, 
+});
+```
+
+#### Parameters
+- None
+
+#### Return
+- Config as a javascript object
+
+#### Example:
+```javascript
+const autoConfig = require('auto-config-js');
+autoConfig.init({
+  profile: 'development',
+  configDirectory: './config/'
+});
+const config = autoConfig.getConfig()
 ```
 
 ## Contributing Guide
