@@ -131,7 +131,7 @@ Property | Environment variable
 
 ## API
 
-### init
+## init
 
 ```javascript
 autoConfig.init({
@@ -162,7 +162,7 @@ autoConfig.init({
 });
 ```
 
-### getConfig
+## getConfig
 
 ```javascript
 autoConfig.init({
