@@ -1,0 +1,6 @@
+include: ['base']
+
+session:
+  cookie:
+    maxAge: 86400000
+    secure: true
