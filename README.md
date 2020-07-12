@@ -110,14 +110,14 @@ session.cookie.secure
 
 ## Relaxed Binding
 
-Most operating systems impose strict rules around the names that can be used for environment variables. For example, Linux shell variables can contain only letters (`a` to `z` or `A` to `Z`), numbers (`0` to `9`) or the underscore character (`_). By convention, Unix shell variables will also have their names in UPPERCASE.
+Most operating systems impose strict rules around the names that can be used for environment variables. For example, Linux shell variables can contain only letters (`a` to `z` or `A` to `Z`), numbers (`0` to `9`) or the underscore character (`_`). By convention, Unix shell variables will also have their names in UPPERCASE.
 
 `auto-config-js` relaxed binding rules are, as much as possible, designed to be compatible with these naming restrictions.
 
 To convert a property name in the canonical-form to an environment variable name you can follow these rules:
 
-* Replace dots (.) with underscores (_).
-* Remove any dashes (-).
+* Replace dots (`.`) with underscores (`_`).
+* Remove any dashes (`-`).
 * Convert to uppercase.
 
 For example, we could bind the following properties with the environment variables:
@@ -127,7 +127,7 @@ Property | Environment variable
 `oauth.client-id` | `OAUTH_CLIENTID`
 `oauth.clientId` | `OAUTH_CLIENTID`
 
-> ⚠️️ Underscores cannot be used to replace the dashes in property names. If you attempt to use OAUTH_CLIENT_ID with the example above, no value will be bound.
+> ⚠️️ Underscores cannot be used to replace the dashes in property names. If you attempt to use `OAUTH_CLIENT_ID` with the example above, no value will be bound.
 
 ## API
 
