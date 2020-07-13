@@ -60,17 +60,33 @@ The file content format must be a valid [YAML](https://yaml.org/) format.
 
 YAML is a superset of JSON and, as such, is a convenient format for specifying hierarchical configuration data in a more human-readable way.
 
-> ⚠️ The use of `kebap-case` is supported but not recommended because it requires the use of [Bracket notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_Accessors) when using the [configuration object](#access-to-the-configuration).
+⚠️ Note that the use of `kebap-case` is supported but it requires the use of [bracket notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_Accessors) when using the [configuration object](#access-to-the-configuration). Example:
+```javascript
+config["my-app-name"]
+```
 
 #### Name Convention
 
-Configuration files are named using the following convention: 
+Each configuration file in `auto-config-js` is called a profile configuration. Because of that, configuration files are named using the following convention:
 ```
 app-<PROFILE>.config.yaml
 ```
-. The `<PROFILE>` placeholder uses by default the `NODE_ENV` value. It can be overridden by passing the optional configuration parameter to the `autoConfig` function (check [API](#api)).
+
+The `<PROFILE>` placeholder uses by default the `NODE_ENV` value. It can be overridden by passing the optional configuration parameter to the `autoConfig` function (check [API](#api)).
 
 If no profile specific file is found, `auto-config-js` will do a last attempt and try to load `app.config.yaml`.
+
+Profiles can be defined hierarchically using the `include` keyword. The include keyword expects an array of profiles names (strings) to be included. The configuration load each file and merge if the current configuration. Example:
+```yaml
+include: ['base', 'staging']
+
+application: 'my-app'
+database: 
+  host: 127.0.0.1
+  port: 8080
+```
+
+This configuration will merge the base and staging profiles (profiles on the right override the profiles on the left), then merge the result with this defined profile to build the configuration object. As a last step the auto configuration reads the system variables looking for values to be overridden. 
 
 #### Location
 
@@ -112,7 +128,7 @@ session.cookie.secure
 
 Most operating systems impose strict rules around the names that can be used for environment variables. For example, Linux shell variables can contain only letters (`a` to `z` or `A` to `Z`), numbers (`0` to `9`) or the underscore character (`_`). By convention, Unix shell variables will also have their names in UPPERCASE.
 
-`auto-config-js` relaxed binding rules are, as much as possible, designed to be compatible with these naming restrictions.
+auto-config-js relaxed binding rules are, as much as possible, designed to be compatible with these naming restrictions.
 
 To convert a property name in the canonical-form to an environment variable name you can follow these rules:
 

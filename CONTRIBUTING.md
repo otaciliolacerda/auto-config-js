@@ -14,8 +14,8 @@ If you have been assigned to fix an issue or develop a new feature, please follo
 
 - Fork this repository
 - Install dependencies by running `$ yarn`
-- Auto-build files as you edit by running `$ yarn start`
-- Implement your changes and tests to files in the `src/` directory and corresponding test files
+- Run the example by running `$ yarn example`
+- Implement your changes in the `lib/` and the tests in the `test/` directory
 - Document your changes in the appropriate doc page
 - Git stage your required changes and commit (see below commit guidelines)
 - Submit PR for review
