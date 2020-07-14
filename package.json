@@ -3,10 +3,7 @@
   "version": "0.0.0",
   "description": "Hierarchical NodeJS configuration with Yaml files, environment variables and config merging.",
   "main": "lib/autoConfig.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/otaciliolacerda/auto-config-js.git"
-  },
+  "repository": "otaciliolacerda/auto-config-js",
   "homepage": "https://github.com/otaciliolacerda/auto-config-js#readme",
   "keywords": [
     "configuration",
@@ -40,7 +37,13 @@
   "scripts": {
     "example": "node ./example",
     "test": "jest",
-    "lint": "eslint --fix './lib/**/*.js' './test/**/*.js'"
+    "lint": "eslint --fix './lib/**/*.js' './test/**/*.js'",
+    "release": "yarn publish"
+  },
+  "release": {
+    "branches": [
+      "master"
+    ]
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
