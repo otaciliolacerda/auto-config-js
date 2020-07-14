@@ -1,5 +1,6 @@
 # auto-config-js
 
+[![](https://github.com/otaciliolacerda/auto-config-js/workflows/auto-config-js%20tests/badge.svg)](https://github.com/otaciliolacerda/auto-config-js/actions?query=workflow%3A%22auto-config-js+tests%22)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 [![](https://img.shields.io/badge/Licence-MIT-green.svg)](https://github.com/otaciliolacerda/auto-config-js/blob/master/LICENSE)
 
@@ -86,7 +87,7 @@ database:
   port: 8080
 ```
 
-This configuration will merge the base and staging profiles (profiles on the right override the profiles on the left), then merge the result with this defined profile to build the configuration object. As a last step the auto configuration reads the system variables looking for values to be overridden. 
+This configuration will merge the base and staging profiles (profiles on the right override the profiles on the left), then merge the result with this defined profile to build the configuration object. As a last step the auto configuration reads the system variables looking for values to be overridden.
 
 #### Location
 

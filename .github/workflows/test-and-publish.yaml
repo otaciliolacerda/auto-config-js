@@ -1,4 +1,4 @@
-name: Release
+name: auto-config-js tests
 on:
   push:
     branches:
