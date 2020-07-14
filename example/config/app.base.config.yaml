@@ -1,0 +1,8 @@
+application: 'myDefaultApp'
+credentials:
+  directory: '/meta/credentials'
+session:
+  cookie:
+    maxAge: 1
+    secure: false
+  secret: 'session_secret'

@@ -1,0 +1,66 @@
+{
+  "name": "auto-config-js",
+  "version": "0.0.0",
+  "description": "Hierarchical NodeJS configuration with Yaml files, environment variables and config merging.",
+  "main": "lib/autoConfig.js",
+  "repository": "otaciliolacerda/auto-config-js",
+  "homepage": "https://github.com/otaciliolacerda/auto-config-js#readme",
+  "keywords": [
+    "configuration",
+    "environment",
+    "config",
+    "yaml",
+    "auto-configuration"
+  ],
+  "author": "otaciliolacerda",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/otaciliolacerda/auto-config-js/issues"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^10.4.3",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.3.1",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-jest": "^23.18.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-sonarjs": "^0.5.0",
+    "jest": "^26.1.0",
+    "lint-staged": "^10.2.11",
+    "prettier": "^2.0.5",
+    "yorkie": "^2.0.0"
+  },
+  "dependencies": {
+    "js-yaml": "^3.14.0"
+  },
+  "scripts": {
+    "example": "node ./example",
+    "test": "jest",
+    "lint": "eslint --fix './lib/**/*.js' './test/**/*.js'",
+    "release": "yarn publish"
+  },
+  "release": {
+    "branches": [
+      "master"
+    ]
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "yarn lint"
+    ]
+  },
+  "engines": {
+    "node": ">=12.13"
+  },
+  "jest": {
+    "clearMocks": true,
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "lib/**/*.js"
+    ]
+  }
+}

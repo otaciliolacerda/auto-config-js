@@ -1,0 +1,13 @@
+{
+  "parser": "babel-eslint",
+  "plugins": ["jest", "sonarjs"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:jest/recommended",
+    "plugin:node/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "env": {
+    "jest": true
+  }
+}
