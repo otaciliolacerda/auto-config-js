@@ -1,6 +1,7 @@
 const {
   hasValue,
   getPropertyCaseInsensitive,
+  setPropertyCaseInsensitive,
   overrideConfigValuesFromSystemVariables,
 } = require('../lib/utils');
 
@@ -28,6 +29,55 @@ it('getPropertyCaseInsensitive', () => {
   expect(() =>
     getPropertyCaseInsensitive({ test: 1, Test: 2 }, 'test')
   ).toThrowError(/test/);
+});
+
+describe('setPropertyCaseInsensitive', () => {
+  it('should fail if property does not exist', () => {
+    expect(() => setPropertyCaseInsensitive({}, 'test', 'test')).toThrowError(
+      /Error trying to set value {test} for non-existing property {test}/
+    );
+  });
+
+  it('should fail for duplicated properties', () => {
+    expect(() =>
+      setPropertyCaseInsensitive({ test: 'mock', Test: 'mock' }, 'test', 'test')
+    ).toThrowError(/Found duplicated {test} property/);
+  });
+
+  it('should fail if data types do not match', () => {
+    expect(() =>
+      setPropertyCaseInsensitive({ a: 1 }, 'a', 'true')
+    ).toThrowError(/Number expected for property {a}, got {true}/);
+    expect(() =>
+      setPropertyCaseInsensitive({ a: false }, 'a', '1')
+    ).toThrowError(/Value true\/false expected for property {a}, got {1}/);
+  });
+
+  it('should override numbers correctly', () => {
+    const obj = { a: 1 };
+    setPropertyCaseInsensitive(obj, 'a', '2');
+    expect(obj.a).toBe(2);
+    setPropertyCaseInsensitive(obj, 'a', '0');
+    expect(obj.a).toBe(0);
+    setPropertyCaseInsensitive(obj, 'a', '-1');
+    expect(obj.a).toBe(-1);
+    setPropertyCaseInsensitive(obj, 'a', '0.01');
+    expect(obj.a).toBe(0.01);
+    setPropertyCaseInsensitive(obj, 'a', '0.0');
+    expect(obj.a).toBe(0);
+    setPropertyCaseInsensitive(obj, 'a', '-0.1');
+    expect(obj.a).toBe(-0.1);
+    setPropertyCaseInsensitive(obj, 'a', '-0');
+    expect(obj.a).toBe(-0);
+  });
+
+  it('should override booleans correctly', () => {
+    const obj = { a: false };
+    setPropertyCaseInsensitive(obj, 'a', 'true');
+    expect(obj.a).toBeTruthy();
+    setPropertyCaseInsensitive(obj, 'a', 'false');
+    expect(obj.a).toBeFalsy();
+  });
 });
 
 describe('overrideConfigValuesFromSystemVariables', () => {
