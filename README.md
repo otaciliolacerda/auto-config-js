@@ -66,6 +66,8 @@ YAML is a superset of JSON and, as such, is a convenient format for specifying h
 config["my-app-name"]
 ```
 
+⚠️ Although Javascript and YAML are case sensitive and accept properties with same name but different case in the same object (e.g. `variable`/`VARiable`, this lib will through an error in such cases. This constraint has the goal to improve the configuration readability and to make it possible the override of such properties by system variables.
+
 #### Name Convention
 
 Each configuration file in `auto-config-js` is called a profile configuration. Because of that, configuration files are named using the following convention:
