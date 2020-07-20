@@ -3,6 +3,7 @@ const {
   getPropertyCaseInsensitive,
   setPropertyCaseInsensitive,
   overrideConfigValuesFromSystemVariables,
+  mergeDeep,
 } = require('../lib/utils');
 
 it('hasValue', () => {
@@ -155,5 +156,32 @@ describe('overrideConfigValuesFromSystemVariables', () => {
     expect(config.test['single-test']).toBe(
       systemVariables['TEST_SINGLE-TEST']
     );
+  });
+});
+
+describe('mergeDeep', () => {
+  it('should merge empty objects', () => {
+    expect(mergeDeep({}, {})).toEqual({});
+  });
+
+  it('should create non existing properties in the targe object', () => {
+    expect(mergeDeep({}, { test: 1 })).toEqual({ test: 1 });
+  });
+
+  it('should not remove any existing properties from target object', () => {
+    expect(mergeDeep({ test: 1 }, {})).toEqual({ test: 1 });
+  });
+
+  it('should override target property', () => {
+    expect(mergeDeep({ test: 1 }, { test: 'test' })).toEqual({ test: 'test' });
+  });
+
+  it('should override nested objects correctly', () => {
+    const target = { a: 1, b: { c: 'c', d: { e: 'e', f: 'f' } } };
+    const source = { b: { c: 'cTest', d: { e: 'eTest' } } };
+    expect(mergeDeep(target, source)).toEqual({
+      a: 1,
+      b: { c: 'cTest', d: { e: 'eTest', f: 'f' } },
+    });
   });
 });
