@@ -37,7 +37,7 @@ describe('test autoConfig', () => {
     spy.mockRestore();
   });
 
-  it('should not contain keyword include in the config object', () => {
+  it('should not contain keyword [include] in the config object', () => {
     autoConfig.init();
     expect(autoConfig.getConfig().include).toBeUndefined();
   });
@@ -67,5 +67,13 @@ describe('test autoConfig', () => {
     expect(autoConfig.getConfig()).toBeUndefined();
     autoConfig.init();
     expect(autoConfig.getConfig()).toEqual(mockConfig);
+  });
+
+  it('should work with default params', () => {
+    autoConfig.init();
+    expect(utils.loadConfiguration).toHaveBeenCalledWith(
+      process.cwd(),
+      process.env.NODE_ENV
+    );
   });
 });
