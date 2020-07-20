@@ -72,12 +72,10 @@ config["my-app-name"]
 
 Each configuration file in `auto-config-js` is called a profile configuration. Because of that, configuration files are named using the following convention:
 ```
-app-<PROFILE>.config.yaml
+app.<PROFILE>.config.yaml
 ```
 
 The `<PROFILE>` placeholder uses by default the `NODE_ENV` value. It can be overridden by passing the optional configuration parameter to the `autoConfig` function (check [API](#api)).
-
-If no profile specific file is found, `auto-config-js` will do a last attempt and try to load `app.config.yaml`.
 
 Profiles can be defined hierarchically using the `include` keyword. The include keyword expects an array of profiles names (strings) to be included. The configuration load each file and merge if the current configuration. Example:
 ```yaml
