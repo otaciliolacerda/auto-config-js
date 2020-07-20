@@ -249,7 +249,7 @@ describe('loadConfiguration', () => {
       myApp: 'mock',
       test: 1,
       mock: 2,
-      include: ['subProfile', 'subProfile2'],
+      include: expect.anything(),
     });
   });
 
