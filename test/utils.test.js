@@ -172,7 +172,7 @@ describe('mergeDeep', () => {
     expect(mergeDeep({}, {})).toEqual({});
   });
 
-  it('should create non existing properties in the targe object', () => {
+  it('should create non existing properties in the target object', () => {
     expect(mergeDeep({}, { test: 1 })).toEqual({ test: 1 });
   });
 
