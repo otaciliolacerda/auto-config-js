@@ -1,9 +1,17 @@
+jest.mock('fs');
+jest.mock('path');
+jest.mock('js-yaml');
+
+const path = require('path');
+const yaml = require('js-yaml');
+
 const {
   hasValue,
   getPropertyCaseInsensitive,
   setPropertyCaseInsensitive,
   overrideConfigValuesFromSystemVariables,
   mergeDeep,
+  loadConfiguration,
 } = require('../lib/utils');
 
 it('hasValue', () => {
@@ -183,5 +191,147 @@ describe('mergeDeep', () => {
       a: 1,
       b: { c: 'cTest', d: { e: 'eTest', f: 'f' } },
     });
+  });
+});
+
+describe('loadConfiguration', () => {
+  it('should fail if include tag is invalid', () => {
+    yaml.safeLoad = jest.fn(() => ({ include: 1 }));
+    expect(() => loadConfiguration('mockPath', 'mockProfile')).toThrowError(
+      /Include field must be an array in profile: mockProfile!/
+    );
+
+    yaml.safeLoad = jest.fn(() => ({ include: 'test' }));
+    expect(() => loadConfiguration('mockPath', 'mockProfile')).toThrowError(
+      /Include field must be an array in profile: mockProfile!/
+    );
+
+    yaml.safeLoad = jest.fn(() => ({ include: {} }));
+    expect(() => loadConfiguration('mockPath', 'mockProfile')).toThrowError(
+      /Include field must be an array in profile: mockProfile!/
+    );
+  });
+
+  it('should load config with no includes', () => {
+    yaml.safeLoad = jest.fn(() => ({ myApp: 'mock' }));
+    expect(loadConfiguration('mockPath', 'mockProfile')).toEqual({
+      myApp: 'mock',
+    });
+  });
+
+  it('should load config with single include', () => {
+    yaml.safeLoad = jest
+      .fn()
+      .mockImplementationOnce(() => ({
+        myApp: 'mock',
+        include: ['subProfile'],
+      }))
+      .mockImplementationOnce(() => ({ test: 1 }));
+
+    expect(loadConfiguration('mockPath', 'mockProfile')).toEqual({
+      myApp: 'mock',
+      test: 1,
+      include: ['subProfile'],
+    });
+  });
+
+  it('should load config with multiple includes', () => {
+    yaml.safeLoad = jest
+      .fn()
+      .mockImplementationOnce(() => ({
+        myApp: 'mock',
+        include: ['subProfile', 'subProfile2'],
+      }))
+      .mockImplementationOnce(() => ({ test: 1 }))
+      .mockImplementationOnce(() => ({ mock: 2 }));
+
+    expect(loadConfiguration('mockPath', 'mockProfile')).toEqual({
+      myApp: 'mock',
+      test: 1,
+      mock: 2,
+      include: ['subProfile', 'subProfile2'],
+    });
+  });
+
+  it('should load config with nested includes', () => {
+    yaml.safeLoad = jest
+      .fn()
+      .mockImplementationOnce(() => ({
+        myApp: 'mock',
+        include: ['subProfile'],
+      }))
+      .mockImplementationOnce(() => ({ test: 1, include: ['subProfile2'] }))
+      .mockImplementationOnce(() => ({ mock: 2 }));
+
+    expect(loadConfiguration('mockPath', 'mockProfile')).toEqual({
+      myApp: 'mock',
+      test: 1,
+      mock: 2,
+      include: ['subProfile'],
+    });
+  });
+
+  it('should load respect merge priority', () => {
+    yaml.safeLoad = jest
+      .fn()
+      .mockImplementationOnce(() => ({
+        myApp: 'root',
+        include: ['subProfile', 'subProfile3'],
+      }))
+      .mockImplementationOnce(() => ({
+        myApp: 'subProfile3',
+        test: 'subProfile3',
+        include: ['subProfile4', 'subProfile5'],
+      }))
+      .mockImplementationOnce(() => ({
+        myApp: 'subProfile5',
+      }))
+      .mockImplementationOnce(() => ({
+        myApp: 'subProfile4',
+      }))
+      .mockImplementationOnce(() => ({
+        myApp: 'subProfile',
+        test: 'test',
+        include: ['subProfile2'],
+      }))
+      .mockImplementationOnce(() => ({ myApp: 'subProfile2' }));
+
+    const mockPath = 'mockPath';
+    expect(loadConfiguration(mockPath, 'mockProfile')).toEqual({
+      myApp: 'root',
+      test: 'subProfile3',
+      include: expect.anything(),
+    });
+
+    expect(path.join).toHaveBeenNthCalledWith(
+      1,
+      mockPath,
+      'app.mockProfile.config.yaml'
+    );
+    expect(path.join).toHaveBeenNthCalledWith(
+      2,
+      mockPath,
+      'app.subProfile3.config.yaml'
+    );
+    expect(path.join).toHaveBeenNthCalledWith(
+      3,
+      mockPath,
+      'app.subProfile5.config.yaml'
+    );
+    expect(path.join).toHaveBeenNthCalledWith(
+      4,
+      mockPath,
+      'app.subProfile4.config.yaml'
+    );
+    expect(path.join).toHaveBeenNthCalledWith(
+      5,
+      mockPath,
+      'app.subProfile.config.yaml'
+    );
+    expect(path.join).toHaveBeenNthCalledWith(
+      6,
+      mockPath,
+      'app.subProfile2.config.yaml'
+    );
   });
 });
