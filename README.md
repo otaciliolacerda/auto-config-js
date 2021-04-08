@@ -101,7 +101,7 @@ The list is ordered by precedence (properties defined in locations higher in the
 
 #### Type conversion
 
-The type conversion is controlled by [js-yaml](https://github.com/nodeca/js-yaml). This lib uses the `safeLoad` function with the default schema (all supported YAML types, without unsafe ones). 
+The type conversion is controlled by [js-yaml](https://github.com/nodeca/js-yaml). This lib uses the default schema (all supported YAML types, without unsafe ones). 
 
 If necessary a few internals can be exposed in the future for further configuration and JSON support.
 

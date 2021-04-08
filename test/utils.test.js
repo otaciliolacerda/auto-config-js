@@ -196,31 +196,31 @@ describe('mergeDeep', () => {
 
 describe('loadConfiguration', () => {
   it('should fail if include tag is invalid', () => {
-    yaml.safeLoad = jest.fn(() => ({ include: 1 }));
+    yaml.load = jest.fn(() => ({ include: 1 }));
     expect(() => loadConfiguration('mockPath', 'mockProfile')).toThrowError(
       /Include field must be an array in profile: mockProfile!/
     );
 
-    yaml.safeLoad = jest.fn(() => ({ include: 'test' }));
+    yaml.load = jest.fn(() => ({ include: 'test' }));
     expect(() => loadConfiguration('mockPath', 'mockProfile')).toThrowError(
       /Include field must be an array in profile: mockProfile!/
     );
 
-    yaml.safeLoad = jest.fn(() => ({ include: {} }));
+    yaml.load = jest.fn(() => ({ include: {} }));
     expect(() => loadConfiguration('mockPath', 'mockProfile')).toThrowError(
       /Include field must be an array in profile: mockProfile!/
     );
   });
 
   it('should load config with no includes', () => {
-    yaml.safeLoad = jest.fn(() => ({ myApp: 'mock' }));
+    yaml.load = jest.fn(() => ({ myApp: 'mock' }));
     expect(loadConfiguration('mockPath', 'mockProfile')).toEqual({
       myApp: 'mock',
     });
   });
 
   it('should load config with single include', () => {
-    yaml.safeLoad = jest
+    yaml.load = jest
       .fn()
       .mockImplementationOnce(() => ({
         myApp: 'mock',
@@ -236,7 +236,7 @@ describe('loadConfiguration', () => {
   });
 
   it('should load config with multiple includes', () => {
-    yaml.safeLoad = jest
+    yaml.load = jest
       .fn()
       .mockImplementationOnce(() => ({
         myApp: 'mock',
@@ -254,7 +254,7 @@ describe('loadConfiguration', () => {
   });
 
   it('should load config with nested includes', () => {
-    yaml.safeLoad = jest
+    yaml.load = jest
       .fn()
       .mockImplementationOnce(() => ({
         myApp: 'mock',
@@ -272,7 +272,7 @@ describe('loadConfiguration', () => {
   });
 
   it('should load respect merge priority', () => {
-    yaml.safeLoad = jest
+    yaml.load = jest
       .fn()
       .mockImplementationOnce(() => ({
         myApp: 'root',
