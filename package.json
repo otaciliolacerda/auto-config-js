@@ -41,8 +41,8 @@
     "lint": "eslint --fix './lib/**/*.js' './test/**/*.js'",
     "release": "yarn publish",
     "postinstall": "husky install",
-    "prepublishOnly": "pinst --disable",
-    "postpublish": "pinst --enable"
+    "prepublishOnly": "yarn pinst --disable",
+    "postpublish": "yarn pinst --enable"
   },
   "release": {
     "branches": [
