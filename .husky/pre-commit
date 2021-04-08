@@ -1,5 +1,6 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+yarn example >/dev/null
 yarn test
-yarn lint
+yarn lint --chache
