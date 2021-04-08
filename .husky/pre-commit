@@ -3,4 +3,4 @@
 
 yarn example >/dev/null
 yarn test
-yarn lint --chache
+yarn lint --cache
