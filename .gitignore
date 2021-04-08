@@ -105,3 +105,12 @@ dist
 
 # IntelliJ
 .idea/
+
+# yarn 2 - not using Zero-installs
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
