@@ -39,7 +39,6 @@
   },
   "scripts": {
     "build": "tsc",
-    "example": "tsc -p tsconfig.json ./example/index.js ",
     "test": "jest",
     "lint": "eslint --fix './lib/**/*.js' './test/**/*.js'",
     "prettier": "prettier 'lib/**/*' 'test/**/*'",
