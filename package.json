@@ -50,7 +50,7 @@
     ]
   },
   "engines": {
-    "node": ">=12.13"
+    "node": ">=16"
   },
   "jest": {
     "clearMocks": true,
