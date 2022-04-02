@@ -1,13 +1,15 @@
 {
-  "parser": "babel-eslint",
-  "plugins": ["jest", "sonarjs"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint",
+    "sonarjs"
+  ],
   "extends": [
     "eslint:recommended",
-    "plugin:jest/recommended",
-    "plugin:node/recommended",
-    "plugin:prettier/recommended"
+    "plugin:@typescript-eslint/recommended"
   ],
   "env": {
-    "jest": true
+    "jest": true,
+    "node": true
   }
 }

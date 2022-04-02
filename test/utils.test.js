@@ -1,18 +1,18 @@
+import path from 'path';
+import yaml from 'js-yaml';
+
+import {
+  getPropertyCaseInsensitive,
+  hasValue,
+  loadConfiguration,
+  mergeDeep,
+  overrideConfigValuesFromSystemVariables,
+  setPropertyCaseInsensitive,
+} from '../lib/utils';
+
 jest.mock('fs');
 jest.mock('path');
 jest.mock('js-yaml');
-
-const path = require('path');
-const yaml = require('js-yaml');
-
-const {
-  hasValue,
-  getPropertyCaseInsensitive,
-  setPropertyCaseInsensitive,
-  overrideConfigValuesFromSystemVariables,
-  mergeDeep,
-  loadConfiguration,
-} = require('../lib/utils');
 
 it('hasValue', () => {
   expect(hasValue({})).toBeTruthy();

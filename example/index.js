@@ -1,8 +1,8 @@
-const autoConfig = require('../lib/autoConfig');
+import autoConfig from "auto-config-js";
 
 autoConfig.init({
   profile: 'dev',
-  configDirectory: './example/config/',
+  configDirectory: './config/',
 });
 
 console.log(autoConfig.getConfig());

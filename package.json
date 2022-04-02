@@ -2,7 +2,11 @@
   "name": "auto-config-js",
   "version": "0.0.0",
   "description": "Hierarchical NodeJS configuration with Yaml files, environment variables and config merging.",
-  "main": "lib/autoConfig.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
   "repository": "otaciliolacerda/auto-config-js",
   "homepage": "https://github.com/otaciliolacerda/auto-config-js#readme",
   "keywords": [
@@ -18,27 +22,28 @@
     "url": "https://github.com/otaciliolacerda/auto-config-js/issues"
   },
   "devDependencies": {
-    "@testing-library/react": "^11.2.6",
-    "babel-eslint": "^10.1.0",
+    "@types/jest": "^27.4.1",
+    "@typescript-eslint/eslint-plugin": "^5.17.0",
+    "@typescript-eslint/parser": "^5.17.0",
     "eslint": "^7.23.0",
-    "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-jest": "^24.3.2",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-sonarjs": "^0.6.0",
     "husky": "^6.0.0",
-    "jest": "^26.6.3",
-    "lint-staged": "^10.5.4",
+    "jest": "^27.5.1",
     "pinst": "^2.0.0",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "ts-jest": "^27.1.4",
+    "typescript": "^4.6.3"
   },
   "dependencies": {
     "js-yaml": "^4.0.0"
   },
   "scripts": {
-    "example": "node ./example",
+    "build": "tsc",
+    "example": "tsc -p tsconfig.json ./example/index.js ",
     "test": "jest",
     "lint": "eslint --fix './lib/**/*.js' './test/**/*.js'",
+    "prettier": "prettier 'lib/**/*' 'test/**/*'",
+    "prettier:fix": "prettier --write 'lib/**/*' 'test/**/*'",
     "release": "yarn publish",
     "postinstall": "husky install",
     "prepublishOnly": "yarn pinst --disable",
@@ -53,6 +58,13 @@
     "node": ">=16"
   },
   "jest": {
+    "preset": "ts-jest/presets/js-with-ts",
+    "testEnvironment": "node",
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "<rootDir>/tsconfig.json"
+      }
+    },
     "clearMocks": true,
     "collectCoverage": true,
     "collectCoverageFrom": [
