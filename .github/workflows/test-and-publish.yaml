@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [14, 12]
+        node: [16]
     steps:
       - uses: actions/setup-node@v1
         with:
@@ -32,12 +32,14 @@ jobs:
       - name: Setup NodeJS
         uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: ${{ matrix.node }}
           registry-url: https://registry.npmjs.org/
       - name: Install yarn
         run: npm i -g yarn
       - name: Install dependencies
         run: yarn --immutable
+      - name: Build
+        run: yarn build
       - name: Publish
         run: npx semantic-release@17
         env:

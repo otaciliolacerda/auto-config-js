@@ -1,4 +1,4 @@
-const utils = require('../lib/utils');
+import utils from '../lib/utils';
 
 jest.mock('../lib/utils', () => ({
   loadConfiguration: jest.fn(() => ({
@@ -26,7 +26,7 @@ describe('test autoConfig', () => {
 
   it('should warn if init is called more than once', () => {
     const spy = jest.spyOn(console, 'warn');
-    spy.mockImplementation(() => {});
+    spy.mockImplementation(() => undefined);
 
     autoConfig.init();
     autoConfig.init();
