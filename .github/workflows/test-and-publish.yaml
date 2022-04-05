@@ -2,7 +2,7 @@ name: auto-config-js tests
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
 jobs:
   test:
@@ -23,8 +23,8 @@ jobs:
   publish:
     name: 'Publish Module to NPM'
     needs: test
-    # publish only when merged in master on original repo, not on PR
-    if: github.repository_owner == 'otaciliolacerda' && github.ref == 'refs/heads/master'
+    # publish only when merged in main on original repo, not on PR
+    if: github.repository_owner == 'otaciliolacerda' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
