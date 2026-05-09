@@ -2,6 +2,7 @@
   "name": "auto-config-js",
   "version": "0.0.0",
   "description": "Hierarchical NodeJS configuration with Yaml files, environment variables and config merging.",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -22,25 +23,26 @@
     "url": "https://github.com/otaciliolacerda/auto-config-js/issues"
   },
   "devDependencies": {
-    "@types/jest": "^27.4.1",
-    "@typescript-eslint/eslint-plugin": "^5.17.0",
-    "@typescript-eslint/parser": "^5.17.0",
-    "eslint": "^8.12.0",
-    "eslint-plugin-sonarjs": "^0.13.0",
-    "husky": "^7.0.4",
-    "jest": "^27.5.1",
+    "@eslint/eslintrc": "^3.3.5",
+    "@eslint/js": "^10.0.1",
+    "@types/jest": "^30.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.59.2",
+    "@typescript-eslint/parser": "^8.59.2",
+    "eslint": "^10.3.0",
+    "eslint-plugin-sonarjs": "^4.0.3",
+    "globals": "^17.6.0",
+    "husky": "^9.1.7",
+    "jest": "^30.4.2",
     "pinst": "^3.0.0",
-    "prettier": "^2.6.2",
-    "ts-jest": "^27.1.4",
-    "typescript": "^4.6.3"
+    "prettier": "^3.8.3",
+    "typescript": "^6.0.3"
   },
   "dependencies": {
-    "js-yaml": "^4.1.0",
-    "npm": "^11.14.1"
+    "js-yaml": "^4.1.1"
   },
   "scripts": {
     "build": "tsc",
-    "test": "jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "lint": "eslint --fix './lib/**/*.js' './test/**/*.js'",
     "prettier": "prettier 'lib/**/*' 'test/**/*'",
     "prettier:fix": "prettier --write 'lib/**/*' 'test/**/*'",
@@ -58,12 +60,12 @@
     "node": ">=22.0.0"
   },
   "jest": {
-    "preset": "ts-jest/presets/js-with-ts",
     "testEnvironment": "node",
-    "globals": {
-      "ts-jest": {
-        "tsconfig": "<rootDir>/tsconfig.json"
-      }
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
+    "transform": {
+      "^.+\\.[jt]sx?$": "<rootDir>/jest-strip-types-transform.cjs"
     },
     "clearMocks": true,
     "collectCoverage": true,
@@ -78,8 +80,5 @@
         "statements": -15
       }
     }
-  },
-  "overrides": {
-    "lodash": "^4.17.19"
   }
 }
