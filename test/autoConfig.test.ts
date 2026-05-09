@@ -9,15 +9,25 @@ vi.mock('../lib/utils.js', () => ({
     mockOverrideConfigValuesFromSystemVariables,
 }));
 
-const utils = await import('../lib/utils.js');
-const autoConfig = await import('../lib/autoConfig.js');
+// Re-import autoConfig fresh for each test so the module-level `config`
+// singleton is reset between tests rather than bleeding state across them.
+let autoConfig: typeof import('../lib/autoConfig.js');
+let utils: typeof import('../lib/utils.js');
+
+beforeEach(async () => {
+  vi.resetModules();
+  process.env.NODE_ENV = 'test';
+  mockLoadConfiguration.mockReturnValue({ include: [] });
+  mockOverrideConfigValuesFromSystemVariables.mockReset();
+  utils = await import('../lib/utils.js');
+  autoConfig = await import('../lib/autoConfig.js');
+});
 
 describe('test autoConfig', () => {
-  beforeEach(() => {
-    vi.resetModules();
-    process.env.NODE_ENV = 'test';
-    mockLoadConfiguration.mockReturnValue({ include: [] });
-    mockOverrideConfigValuesFromSystemVariables.mockReset();
+  it('should throw error if getConfig is called before init', () => {
+    expect(() => autoConfig.getConfig()).toThrow(
+      /Config not initialized: call autoConfig.init\(\) first/
+    );
   });
 
   it('should throw error if profile is not defined', () => {
@@ -29,8 +39,7 @@ describe('test autoConfig', () => {
   });
 
   it('should warn if init is called more than once', () => {
-    const spy = vi.spyOn(console, 'warn');
-    spy.mockImplementation(() => undefined);
+    const spy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 
     autoConfig.init();
     autoConfig.init();
@@ -63,10 +72,7 @@ describe('test autoConfig', () => {
   });
 
   it('should be able to get the configuration files', () => {
-    const mockConfig = {
-      test: 1,
-      mock: 'mock',
-    };
+    const mockConfig = { test: 1, mock: 'mock' };
     mockLoadConfiguration.mockReturnValueOnce(mockConfig);
     autoConfig.init();
     expect(autoConfig.getConfig()).toEqual(mockConfig);

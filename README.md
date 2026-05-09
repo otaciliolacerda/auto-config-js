@@ -11,9 +11,10 @@ Usually the configuration files are used externalize default configuration value
 This lib has a single dependency: [js-yaml](https://github.com/nodeca/js-yaml)
 
 ## Quick Features
-* Hierarchical configuration
-* Configuration tree is available as a javascript object
-* Relaxed binding of System Variables
+
+- Hierarchical configuration
+- Configuration tree is available as a javascript object
+- Relaxed binding of System Variables
 
 ## Install
 
@@ -24,6 +25,7 @@ npm install auto-config-js
 ## Usage
 
 Create a YAML file named `app.config.yaml` in your application current directory:
+
 ```yaml
 application: 'my-app'
 database:
@@ -34,17 +36,19 @@ database:
 As early as possible in your application, import and initialise `auto-config-js`. Then retrieve the configuration with `getConfig` wherever you need it:
 
 **JavaScript**
+
 ```javascript
 import { init, getConfig } from 'auto-config-js';
 
 init();
 
 const config = getConfig();
-console.log(config.application);       // 'my-app'
-console.log(config.database.host);     // 127.0.0.1
+console.log(config.application); // 'my-app'
+console.log(config.database.host); // 127.0.0.1
 ```
 
 **TypeScript**
+
 ```typescript
 import { init, getConfig, type ConfigObject } from 'auto-config-js';
 
@@ -59,8 +63,8 @@ interface AppConfig extends ConfigObject {
 init();
 
 const config = getConfig<AppConfig>();
-console.log(config.application);       // 'my-app'
-console.log(config.database.host);     // 127.0.0.1
+console.log(config.application); // 'my-app'
+console.log(config.database.host); // 127.0.0.1
 ```
 
 ## Configuration file
@@ -72,8 +76,9 @@ The file content format must be a valid [YAML](https://yaml.org/) format.
 YAML is a superset of JSON and, as such, is a convenient format for specifying hierarchical configuration data in a more human-readable way.
 
 ⚠️ Note that the use of `kebap-case` is supported but it requires the use of [bracket notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_Accessors) when using the [configuration object](#access-to-the-configuration). Example:
+
 ```javascript
-config["my-app-name"]
+config['my-app-name'];
 ```
 
 ⚠️ Although Javascript and YAML are case sensitive and accept properties with same name but different case in the same object (e.g. `variable`/`VARiable`, this lib will throw an error in such cases. This constraint has the goal to improve the configuration readability and to make it possible the override of such properties by system variables.
@@ -81,6 +86,7 @@ config["my-app-name"]
 #### Name Convention
 
 Each configuration file in `auto-config-js` is called a profile configuration. Because of that, configuration files are named using the following convention:
+
 ```
 app.<PROFILE>.config.yaml
 ```
@@ -88,6 +94,7 @@ app.<PROFILE>.config.yaml
 The `<PROFILE>` placeholder uses by default the `NODE_ENV` value. It can be overridden by passing the optional `profile` parameter to `init` (check [API](#api)).
 
 Profiles can be defined hierarchically using the `include` keyword. The include keyword expects an array of profiles names (strings) to be included. The configuration loads each file and merges with the current configuration. Example:
+
 ```yaml
 include: ['base', 'staging']
 
@@ -123,8 +130,8 @@ session:
 Can be accessed like:
 
 ```javascript
-config.session.cookie.maxAge   // 86400000
-config.session.cookie.secure   // true
+config.session.cookie.maxAge; // 86400000
+config.session.cookie.secure; // true
 ```
 
 ## Relaxed Binding
@@ -135,16 +142,16 @@ auto-config-js relaxed binding rules are, as much as possible, designed to be co
 
 To convert a property name in the canonical-form to an environment variable name you can follow these rules:
 
-* Replace dots (`.`) with underscores (`_`).
-* Remove any dashes (`-`).
-* Convert to uppercase.
+- Replace dots (`.`) with underscores (`_`).
+- Remove any dashes (`-`).
+- Convert to uppercase.
 
 For example, we could bind the following properties with the environment variables:
 
-Property | Environment variable
------------- | -------------
-`oauth.client-id` | `OAUTH_CLIENTID`
-`oauth.clientId` | `OAUTH_CLIENTID`
+| Property          | Environment variable |
+| ----------------- | -------------------- |
+| `oauth.client-id` | `OAUTH_CLIENTID`     |
+| `oauth.clientId`  | `OAUTH_CLIENTID`     |
 
 > ⚠️️ Underscores cannot be used to replace the dashes in property names. If you attempt to use `OAUTH_CLIENT_ID` with the example above, no value will be bound.
 
@@ -157,6 +164,7 @@ init(options?: InitOptions): void
 ```
 
 #### Parameters
+
 - `profile?: string`
   - Optional
   - Name of the profile to be loaded
@@ -169,6 +177,7 @@ init(options?: InitOptions): void
 #### Example
 
 **JavaScript**
+
 ```javascript
 import { init } from 'auto-config-js';
 
@@ -179,6 +188,7 @@ init({
 ```
 
 **TypeScript**
+
 ```typescript
 import { init, type InitOptions } from 'auto-config-js';
 
@@ -197,14 +207,17 @@ getConfig<T extends ConfigObject = ConfigObject>(): T
 ```
 
 #### Parameters
+
 - None
 
 #### Return
+
 - The configuration as a plain object with the same structure defined in the YAML file
 
 #### Example
 
 **JavaScript**
+
 ```javascript
 import { init, getConfig } from 'auto-config-js';
 
@@ -215,6 +228,7 @@ console.log(config.database.host);
 ```
 
 **TypeScript**
+
 ```typescript
 import { init, getConfig, type ConfigObject } from 'auto-config-js';
 
@@ -228,8 +242,8 @@ interface AppConfig extends ConfigObject {
 init({ profile: 'development', configDirectory: './config/' });
 
 const config = getConfig<AppConfig>();
-console.log(config.database.host);  // typed as string
-console.log(config.database.port);  // typed as number
+console.log(config.database.host); // typed as string
+console.log(config.database.port); // typed as number
 ```
 
 ## Contributing Guide

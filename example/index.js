@@ -1,4 +1,4 @@
-import { init, getConfig } from "auto-config-js";
+import { init, getConfig } from 'auto-config-js';
 
 init({
   profile: 'dev',

@@ -4,6 +4,7 @@
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "declaration": true,
+    "declarationMap": true,
     "resolveJsonModule": true,
     "allowJs": false,
     "esModuleInterop": true,
@@ -11,10 +12,7 @@
     "strict": true,
     "types": ["node"],
     "skipLibCheck": true,
-    "rootDir": "./lib",
     "outDir": "./dist"
   },
-  "include": [
-    "lib/**/*"
-  ]
+  "include": ["lib/**/*", "test/**/*"]
 }

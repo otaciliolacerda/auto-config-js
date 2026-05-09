@@ -6,7 +6,7 @@ export default defineConfig({
     environment: 'node',
     clearMocks: true,
     coverage: {
-      enabled: true,
+      enabled: false,
       provider: 'v8',
       include: ['lib/**/*.ts'],
       exclude: ['lib/types.ts'],

@@ -28,5 +28,8 @@ export function init({
 }
 
 export function getConfig<T extends ConfigObject = ConfigObject>(): T {
+  if (!config) {
+    throw new Error('Config not initialized: call autoConfig.init() first');
+  }
   return config as T;
 }
