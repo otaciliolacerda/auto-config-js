@@ -1,6 +1,6 @@
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const mockLoadConfiguration = vi.fn(() => ({ include: [] }));
+const mockLoadConfiguration = vi.fn(() => ({}));
 const mockOverrideConfigValuesFromSystemVariables = vi.fn();
 
 vi.mock('../lib/utils.js', () => ({
@@ -17,7 +17,7 @@ let utils: typeof import('../lib/utils.js');
 beforeEach(async () => {
   vi.resetModules();
   process.env.NODE_ENV = 'test';
-  mockLoadConfiguration.mockReturnValue({ include: [] });
+  mockLoadConfiguration.mockReturnValue({});
   mockOverrideConfigValuesFromSystemVariables.mockReset();
   utils = await import('../lib/utils.js');
   autoConfig = await import('../lib/autoConfig.js');
