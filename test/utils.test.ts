@@ -68,7 +68,7 @@ describe('setPropertyCaseInsensitive', () => {
       /Number expected for property {a}, got {true}/
     );
     expect(() => setPropertyCaseInsensitive({ a: false }, 'a', '1')).toThrow(
-      /Value true\/false expected for property {a}, got {1}/
+      /Value true\/false expected for property {a}, got {1\}/
     );
   });
 

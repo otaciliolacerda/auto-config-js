@@ -16,7 +16,7 @@ function getPropertyNameCaseInsensitive(
   property: string
 ): string | undefined {
   const objKeys = Object.keys(object).filter(
-    k => k.toLowerCase() === property.toLowerCase()
+    (k) => k.toLowerCase() === property.toLowerCase()
   );
   if (objKeys.length > 1) {
     throw new Error(`Found duplicated {${property}} property`);
@@ -68,9 +68,9 @@ function setPropertyCaseInsensitive(
 
 function overrideConfigValuesFromSystemVariables(
   configObj: ConfigObject,
-  systemVariables: NodeJS.ProcessEnv = process.env
+  systemVariables: typeof process.env = process.env
 ): void {
-  Object.keys(systemVariables).forEach(sysVar => {
+  Object.keys(systemVariables).forEach((sysVar) => {
     const tokens = sysVar.toLowerCase().split('_');
     let currentObj: ConfigObject;
     let currentProp: string;
@@ -96,7 +96,7 @@ function overrideConfigValuesFromSystemVariables(
 function mergeDeep(target: ConfigObject, source: ConfigObject): ConfigObject {
   const output: ConfigObject = { ...target };
   if (isObject(target) && isObject(source)) {
-    Object.keys(source).forEach(key => {
+    Object.keys(source).forEach((key) => {
       if (isObject(source[key])) {
         if (!(key in target)) Object.assign(output, { [key]: source[key] });
         else
@@ -141,7 +141,7 @@ function loadConfiguration(
       );
     }
   }
-  return toProcessStack.reduce((acc, current) => mergeDeep(acc, current));
+  return toProcessStack.reduce((acc, current) => mergeDeep(acc, current), {});
 }
 
 export {

@@ -78,11 +78,10 @@ The footer should contain any information about **Breaking Changes** and is also
 
 Here is an example of the release type that will be done based on a commit messages:
 
-| Commit message                                                                                                                                                                                   | Release type               |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------- |
-| `fix: stop graphite breaking when too much pressure applied`                                                                                                                             | Patch Release              |
-| `feat: add 'graphiteWidth' option`                                                                                                                                                       | ~~Minor~~ Feature Release  |
-
+| Commit message                                               | Release type              |
+| ------------------------------------------------------------ | ------------------------- |
+| `fix: stop graphite breaking when too much pressure applied` | Patch Release             |
+| `feat: add 'graphiteWidth' option`                           | ~~Minor~~ Feature Release |
 
 ### Revert
 
