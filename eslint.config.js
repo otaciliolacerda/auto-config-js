@@ -5,11 +5,11 @@ import globals from 'globals';
 
 export default [
   { ignores: ['dist/**', 'coverage/**', 'example/**'] },
-  sonarjs.configs.recommended,
   {
     files: ['lib/**/*.ts', 'test/**/*.ts'],
     plugins: {
       '@typescript-eslint': tseslint,
+      sonarjs,
     },
     languageOptions: {
       parser: tsParser,
@@ -20,6 +20,7 @@ export default [
     },
     rules: {
       ...tseslint.configs.recommended.rules,
+      ...sonarjs.configs.recommended.rules,
       'sonarjs/different-types-comparison': 'off',
     },
   },

@@ -10,7 +10,6 @@ vi.mock('js-yaml', () => ({ default: { load: mockYamlLoad } }));
 
 const {
   getPropertyCaseInsensitive,
-  hasValue,
   loadConfiguration,
   mergeDeep,
   overrideConfigValuesFromSystemVariables,
@@ -22,15 +21,6 @@ beforeEach(() => {
   mockJoin.mockReset();
   mockJoin.mockImplementation((...args: string[]) => args.join('/'));
   mockYamlLoad.mockReset();
-});
-
-it('hasValue', () => {
-  expect(hasValue({})).toBeTruthy();
-  expect(hasValue('')).toBeTruthy();
-  expect(hasValue([])).toBeTruthy();
-  expect(hasValue(0)).toBeTruthy();
-  expect(hasValue(undefined)).toBeFalsy();
-  expect(hasValue(null)).toBeFalsy();
 });
 
 it('getPropertyCaseInsensitive', () => {

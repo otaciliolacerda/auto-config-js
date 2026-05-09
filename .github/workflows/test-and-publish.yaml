@@ -19,6 +19,8 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: 'npm'
       - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
       - run: npm test
   publish:
     name: 'Publish Module to NPM'
