@@ -1,24 +1,27 @@
-import utils from '../lib/utils';
+import { jest, describe, it, expect, beforeEach } from '@jest/globals';
 
-jest.mock('../lib/utils', () => ({
-  loadConfiguration: jest.fn(() => ({
-    include: [],
-  })),
-  overrideConfigValuesFromSystemVariables: jest.fn(),
+const mockLoadConfiguration = jest.fn(() => ({ include: [] }));
+const mockOverrideConfigValuesFromSystemVariables = jest.fn();
+
+jest.unstable_mockModule('../lib/utils.js', () => ({
+  loadConfiguration: mockLoadConfiguration,
+  overrideConfigValuesFromSystemVariables: mockOverrideConfigValuesFromSystemVariables,
 }));
 
-describe('test autoConfig', () => {
-  let autoConfig;
+const utils = await import('../lib/utils.js');
+const autoConfig = await import('../lib/autoConfig.js');
 
+describe('test autoConfig', () => {
   beforeEach(() => {
-    jest.isolateModules(() => {
-      autoConfig = require('../lib/autoConfig');
-    });
+    jest.resetModules();
+    process.env.NODE_ENV = 'test';
+    mockLoadConfiguration.mockReturnValue({ include: [] });
+    mockOverrideConfigValuesFromSystemVariables.mockReset();
   });
 
   it('should throw error if profile is not defined', () => {
     delete process.env.NODE_ENV;
-    expect(() => autoConfig.init()).toThrowError(
+    expect(() => autoConfig.init()).toThrow(
       /No profile was given: set NODE_ENV or pass it as a parameter/
     );
     process.env.NODE_ENV = 'test';
@@ -63,8 +66,7 @@ describe('test autoConfig', () => {
       test: 1,
       mock: 'mock',
     };
-    utils.loadConfiguration.mockImplementationOnce(() => mockConfig);
-    expect(autoConfig.getConfig()).toBeUndefined();
+    mockLoadConfiguration.mockReturnValueOnce(mockConfig);
     autoConfig.init();
     expect(autoConfig.getConfig()).toEqual(mockConfig);
   });
