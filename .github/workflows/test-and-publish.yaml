@@ -17,9 +17,8 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - uses: actions/checkout@v2
-      - run: npm i -g yarn
-      - run: yarn --immutable
-      - run: yarn test
+      - run: npm ci
+      - run: npm test
   publish:
     name: 'Publish Module to NPM'
     needs: test
@@ -32,14 +31,12 @@ jobs:
       - name: Setup NodeJS
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 22
           registry-url: https://registry.npmjs.org/
-      - name: Install yarn
-        run: npm i -g yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: npm ci
       - name: Build
-        run: yarn build
+        run: npm run build
       - name: Publish
         run: npx semantic-release@17
         env:
