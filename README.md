@@ -17,13 +17,7 @@ This lib has a single dependency: [js-yaml](https://github.com/nodeca/js-yaml)
 
 ## Install
 
-With yarn:
 ```bash
-yarn add auto-config-js
-```
-
-With npm: 
-```bash 
 npm install auto-config-js
 ```
 
@@ -32,32 +26,48 @@ npm install auto-config-js
 Create a YAML file named `app.config.yaml` in your application current directory:
 ```yaml
 application: 'my-app'
-database: 
+database:
   host: 127.0.0.1
   port: 8080
 ```
 
-As early as possible in your application, require and configure `auto-config-js`.
+As early as possible in your application, import and initialise `auto-config-js`. Then retrieve the configuration with `getConfig` wherever you need it:
+
+**JavaScript**
 ```javascript
-const config = require('auto-config-js').init()
+import { init, getConfig } from 'auto-config-js';
+
+init();
+
+const config = getConfig();
+console.log(config.application);       // 'my-app'
+console.log(config.database.host);     // 127.0.0.1
 ```
 
-The `autoConfig` will read the YAML file. from the current directory and load the configuration in a javascript object. Now the `config` constant contains the configuration you defined in your YAML file.
+**TypeScript**
+```typescript
+import { init, getConfig, type ConfigObject } from 'auto-config-js';
 
-```javascript
-const myAppName = config.application;
-const db = require('db');
-db.connect({
-  host: config.database.host,
-  port: config.database.port,
-})
+interface AppConfig extends ConfigObject {
+  application: string;
+  database: {
+    host: string;
+    port: number;
+  };
+}
+
+init();
+
+const config = getConfig<AppConfig>();
+console.log(config.application);       // 'my-app'
+console.log(config.database.host);     // 127.0.0.1
 ```
 
 ## Configuration file
 
 #### Content Format
 
-The file content format must be a valid [YAML](https://yaml.org/) format. 
+The file content format must be a valid [YAML](https://yaml.org/) format.
 
 YAML is a superset of JSON and, as such, is a convenient format for specifying hierarchical configuration data in a more human-readable way.
 
@@ -75,14 +85,14 @@ Each configuration file in `auto-config-js` is called a profile configuration. B
 app.<PROFILE>.config.yaml
 ```
 
-The `<PROFILE>` placeholder uses by default the `NODE_ENV` value. It can be overridden by passing the optional configuration parameter to the `autoConfig` function (check [API](#api)).
+The `<PROFILE>` placeholder uses by default the `NODE_ENV` value. It can be overridden by passing the optional `profile` parameter to `init` (check [API](#api)).
 
-Profiles can be defined hierarchically using the `include` keyword. The include keyword expects an array of profiles names (strings) to be included. The configuration load each file and merge if the current configuration. Example:
+Profiles can be defined hierarchically using the `include` keyword. The include keyword expects an array of profiles names (strings) to be included. The configuration loads each file and merges with the current configuration. Example:
 ```yaml
 include: ['base', 'staging']
 
 application: 'my-app'
-database: 
+database:
   host: 127.0.0.1
   port: 8080
 ```
@@ -91,17 +101,11 @@ This configuration will merge the base and staging profiles (profiles on the rig
 
 #### Location
 
-`auto-config-js` by default tries to load the configuration files from:
-1. From `${configDir}/` directory (check [API](#api))
-1. A `/config` sub-directory of the current directory
-1. The current directory
-
-The list is ordered by precedence (properties defined in locations higher in the list override those defined in lower locations).
-
+`auto-config-js` loads configuration files from the directory specified via `configDirectory` (defaults to `process.cwd()`).
 
 #### Type conversion
 
-The type conversion is controlled by [js-yaml](https://github.com/nodeca/js-yaml). This lib uses the default schema (all supported YAML types, without unsafe ones). 
+The type conversion is controlled by [js-yaml](https://github.com/nodeca/js-yaml). This lib uses the default schema (all supported YAML types, without unsafe ones).
 
 If necessary a few internals can be exposed in the future for further configuration and JSON support.
 
@@ -110,19 +114,17 @@ If necessary a few internals can be exposed in the future for further configurat
 The configuration will be available to the application as a javascript object, having the same hierarchical structure defined in the YAML file. This means the following configuration:
 
 ```yaml
-oauth2.client.id: myUser
 session:
   cookie:
     maxAge: 86400000
     secure: true
 ```
 
-Can be access like:
+Can be accessed like:
 
-```yaml
-config.oauth2.client.id
-session.cookie.maxAge
-session.cookie.secure
+```javascript
+config.session.cookie.maxAge   // 86400000
+config.session.cookie.secure   // true
 ```
 
 ## Relaxed Binding
@@ -148,60 +150,86 @@ Property | Environment variable
 
 ## API
 
-## init
+### init
 
-```javascript
-autoConfig.init({
-  profile,
-  configDirectory, 
-});
+```typescript
+init(options?: InitOptions): void
 ```
 
 #### Parameters
-- `profile: String`
+- `profile?: string`
   - Optional
   - Name of the profile to be loaded
-  - Default to the value found in `NODE_ENV`
-- `configDirectory: String`
+  - Defaults to the value of `NODE_ENV`
+- `configDirectory?: string`
   - Optional
-  - The relative or absolute path to the directory where the configuration files are located.
-  - Read [Location](#location) for default behaviour
+  - The relative or absolute path to the directory where the configuration files are located
+  - Defaults to `process.cwd()`
 
-#### Return
-- Nothing
+#### Example
 
-#### Example:
+**JavaScript**
 ```javascript
-const autoConfig = require('auto-config-js');
-autoConfig.init({
+import { init } from 'auto-config-js';
+
+init({
   profile: 'development',
-  configDirectory: './config/'
+  configDirectory: './config/',
 });
 ```
 
-## getConfig
+**TypeScript**
+```typescript
+import { init, type InitOptions } from 'auto-config-js';
 
-```javascript
-autoConfig.init({
-  profile,
-  configDirectory, 
-});
+const options: InitOptions = {
+  profile: 'development',
+  configDirectory: './config/',
+};
+
+init(options);
+```
+
+### getConfig
+
+```typescript
+getConfig<T extends ConfigObject = ConfigObject>(): T
 ```
 
 #### Parameters
 - None
 
 #### Return
-- Config as a javascript object
+- The configuration as a plain object with the same structure defined in the YAML file
 
-#### Example:
+#### Example
+
+**JavaScript**
 ```javascript
-const autoConfig = require('auto-config-js');
-autoConfig.init({
-  profile: 'development',
-  configDirectory: './config/'
-});
-const config = autoConfig.getConfig()
+import { init, getConfig } from 'auto-config-js';
+
+init({ profile: 'development', configDirectory: './config/' });
+
+const config = getConfig();
+console.log(config.database.host);
+```
+
+**TypeScript**
+```typescript
+import { init, getConfig, type ConfigObject } from 'auto-config-js';
+
+interface AppConfig extends ConfigObject {
+  database: {
+    host: string;
+    port: number;
+  };
+}
+
+init({ profile: 'development', configDirectory: './config/' });
+
+const config = getConfig<AppConfig>();
+console.log(config.database.host);  // typed as string
+console.log(config.database.port);  // typed as number
 ```
 
 ## Contributing Guide

@@ -13,8 +13,8 @@ If you are here to suggest a feature, first create an issue if it does not alrea
 If you have been assigned to fix an issue or develop a new feature, please follow these steps to get started:
 
 - Fork this repository
-- Install dependencies by running `$ yarn`
-- Run the example by running `$ yarn example`
+- Install dependencies by running `$ npm install`
+- Run the example by following the steps in [example/README.md](example/README.md)
 - Implement your changes in the `lib/` and the tests in the `test/` directory
 - Document your changes in the appropriate doc page
 - Git stage your required changes and commit (see below commit guidelines)

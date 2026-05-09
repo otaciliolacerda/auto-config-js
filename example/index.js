@@ -1,8 +1,8 @@
-import autoConfig from "auto-config-js";
+import { init, getConfig } from "auto-config-js";
 
-autoConfig.init({
+init({
   profile: 'dev',
   configDirectory: './config/',
 });
 
-console.log(autoConfig.getConfig());
+console.log(getConfig());

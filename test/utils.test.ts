@@ -1,16 +1,12 @@
-import { jest, describe, it, expect, beforeEach } from '@jest/globals';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-const mockReadFileSync = jest.fn();
-const mockJoin = jest.fn((...args) => args.join('/'));
-const mockYamlLoad = jest.fn();
+const mockReadFileSync = vi.fn();
+const mockJoin = vi.fn((...args: string[]) => args.join('/'));
+const mockYamlLoad = vi.fn();
 
-jest.unstable_mockModule('fs', () => ({
-  default: { readFileSync: mockReadFileSync },
-}));
-jest.unstable_mockModule('path', () => ({ default: { join: mockJoin } }));
-jest.unstable_mockModule('js-yaml', () => ({
-  default: { load: mockYamlLoad },
-}));
+vi.mock('fs', () => ({ default: { readFileSync: mockReadFileSync } }));
+vi.mock('path', () => ({ default: { join: mockJoin } }));
+vi.mock('js-yaml', () => ({ default: { load: mockYamlLoad } }));
 
 const {
   getPropertyCaseInsensitive,
@@ -24,7 +20,7 @@ const {
 beforeEach(() => {
   mockReadFileSync.mockReset();
   mockJoin.mockReset();
-  mockJoin.mockImplementation((...args) => args.join('/'));
+  mockJoin.mockImplementation((...args: string[]) => args.join('/'));
   mockYamlLoad.mockReset();
 });
 
@@ -77,7 +73,7 @@ describe('setPropertyCaseInsensitive', () => {
   });
 
   it('should override numbers correctly', () => {
-    const obj = { a: 1 };
+    const obj: { a: number } = { a: 1 };
     setPropertyCaseInsensitive(obj, 'a', '2');
     expect(obj.a).toBe(2);
     setPropertyCaseInsensitive(obj, 'a', '0');
@@ -95,7 +91,7 @@ describe('setPropertyCaseInsensitive', () => {
   });
 
   it('should override booleans correctly', () => {
-    const obj = { a: false };
+    const obj: { a: boolean } = { a: false };
     setPropertyCaseInsensitive(obj, 'a', 'true');
     expect(obj.a).toBeTruthy();
     setPropertyCaseInsensitive(obj, 'a', 'false');
@@ -111,7 +107,7 @@ describe('overrideConfigValuesFromSystemVariables', () => {
     expect(config.my.test).toBe(process.env.MY_TEST);
   });
 
-  it('should accept system varibale object map as optional parameter', () => {
+  it('should accept system variable object map as optional parameter', () => {
     const systemVariables = { MY_TEST: 'test' };
     const config = { my: { test: 'mock' } };
     overrideConfigValuesFromSystemVariables(config, systemVariables);
@@ -162,7 +158,7 @@ describe('overrideConfigValuesFromSystemVariables', () => {
     expect(config.longer.test.var).toBe('mock');
   });
 
-  it('should override kebap-case properties', () => {
+  it('should override kebab-case properties', () => {
     const systemVariables = {
       'SINGLE-TEST': 'single-test',
       'TEST_SINGLE-TEST': 'testSingle-Test',
