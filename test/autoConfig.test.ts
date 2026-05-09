@@ -5,7 +5,8 @@ const mockOverrideConfigValuesFromSystemVariables = jest.fn();
 
 jest.unstable_mockModule('../lib/utils.js', () => ({
   loadConfiguration: mockLoadConfiguration,
-  overrideConfigValuesFromSystemVariables: mockOverrideConfigValuesFromSystemVariables,
+  overrideConfigValuesFromSystemVariables:
+    mockOverrideConfigValuesFromSystemVariables,
 }));
 
 const utils = await import('../lib/utils.js');
