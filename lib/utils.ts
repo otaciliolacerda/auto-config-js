@@ -7,10 +7,6 @@ function isObject(item: unknown): item is ConfigObject {
   return item !== null && typeof item === 'object' && !Array.isArray(item);
 }
 
-function hasValue<T>(obj: T): obj is NonNullable<T> {
-  return obj !== null && obj !== undefined;
-}
-
 function getPropertyNameCaseInsensitive(
   object: ConfigObject,
   property: string
@@ -146,7 +142,6 @@ function loadConfiguration(
 
 export {
   isObject,
-  hasValue,
   getPropertyCaseInsensitive,
   setPropertyCaseInsensitive,
   overrideConfigValuesFromSystemVariables,
