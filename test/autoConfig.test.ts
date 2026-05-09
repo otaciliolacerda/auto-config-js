@@ -1,9 +1,9 @@
-import { jest, describe, it, expect, beforeEach } from '@jest/globals';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-const mockLoadConfiguration = jest.fn(() => ({ include: [] }));
-const mockOverrideConfigValuesFromSystemVariables = jest.fn();
+const mockLoadConfiguration = vi.fn(() => ({ include: [] }));
+const mockOverrideConfigValuesFromSystemVariables = vi.fn();
 
-jest.unstable_mockModule('../lib/utils.js', () => ({
+vi.mock('../lib/utils.js', () => ({
   loadConfiguration: mockLoadConfiguration,
   overrideConfigValuesFromSystemVariables:
     mockOverrideConfigValuesFromSystemVariables,
@@ -14,7 +14,7 @@ const autoConfig = await import('../lib/autoConfig.js');
 
 describe('test autoConfig', () => {
   beforeEach(() => {
-    jest.resetModules();
+    vi.resetModules();
     process.env.NODE_ENV = 'test';
     mockLoadConfiguration.mockReturnValue({ include: [] });
     mockOverrideConfigValuesFromSystemVariables.mockReset();
@@ -29,7 +29,7 @@ describe('test autoConfig', () => {
   });
 
   it('should warn if init is called more than once', () => {
-    const spy = jest.spyOn(console, 'warn');
+    const spy = vi.spyOn(console, 'warn');
     spy.mockImplementation(() => undefined);
 
     autoConfig.init();
