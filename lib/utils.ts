@@ -1,16 +1,20 @@
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
+import type { ConfigObject } from './types.js';
 
-function isObject(item) {
-  return item && typeof item === 'object' && !Array.isArray(item);
+function isObject(item: unknown): item is ConfigObject {
+  return item !== null && typeof item === 'object' && !Array.isArray(item);
 }
 
-function hasValue(obj) {
+function hasValue<T>(obj: T): obj is NonNullable<T> {
   return obj !== null && obj !== undefined;
 }
 
-function getPropertyNameCaseInsensitive(object, property) {
+function getPropertyNameCaseInsensitive(
+  object: ConfigObject,
+  property: string
+): string | undefined {
   const objKeys = Object.keys(object).filter(
     k => k.toLowerCase() === property.toLowerCase()
   );
@@ -20,17 +24,18 @@ function getPropertyNameCaseInsensitive(object, property) {
   return objKeys[0];
 }
 
-function getPropertyCaseInsensitive(object, property) {
-  return object[getPropertyNameCaseInsensitive(object, property)];
+function getPropertyCaseInsensitive(
+  object: ConfigObject,
+  property: string
+): unknown {
+  return object[getPropertyNameCaseInsensitive(object, property) as string];
 }
 
-/**
- * Set the value for an EXISTING property (case-insensitive). Throw error if:
- * - Property does not exist in the object
- * - System Variable value cannot be casted to the current property data type
- * - If duplicated properties are found
- */
-function setPropertyCaseInsensitive(object, property, value) {
+function setPropertyCaseInsensitive(
+  object: ConfigObject,
+  property: string,
+  value: string
+): void {
   const propName = getPropertyNameCaseInsensitive(object, property);
 
   if (!propName) {
@@ -46,7 +51,6 @@ function setPropertyCaseInsensitive(object, property, value) {
           `Value true/false expected for property {${propName}}, got {${value}}`
         );
       }
-      // eslint-disable-next-line no-param-reassign
       object[propName] = value.toLowerCase() === 'true';
       break;
     case 'number':
@@ -55,48 +59,51 @@ function setPropertyCaseInsensitive(object, property, value) {
           `Number expected for property {${propName}}, got {${value}}`
         );
       }
-      // eslint-disable-next-line no-param-reassign
       object[propName] = Number(value);
       break;
     default:
-      // eslint-disable-next-line no-param-reassign
       object[propName] = value;
   }
 }
 
 function overrideConfigValuesFromSystemVariables(
-  configObj,
-  systemVariables = process.env
-) {
+  configObj: ConfigObject,
+  systemVariables: NodeJS.ProcessEnv = process.env
+): void {
   Object.keys(systemVariables).forEach(sysVar => {
-    let tokens = sysVar.toLowerCase().split('_');
-    let currentObj, currentProp;
-    let currentPropValue = configObj;
+    const tokens = sysVar.toLowerCase().split('_');
+    let currentObj: ConfigObject;
+    let currentProp: string;
+    let currentPropValue: unknown = configObj;
 
     do {
-      currentObj = currentPropValue;
-      currentProp = tokens.shift();
+      currentObj = currentPropValue as ConfigObject;
+      currentProp = tokens.shift() as string;
       currentPropValue = getPropertyCaseInsensitive(currentObj, currentProp);
     } while (tokens.length && isObject(currentPropValue));
 
-    if (currentObj && currentProp && currentObj[currentProp]) {
+    if (currentObj! && currentProp! && currentObj[currentProp]) {
       setPropertyCaseInsensitive(
         currentObj,
         currentProp,
-        systemVariables[sysVar]
+        systemVariables[sysVar] as string
       );
     }
   });
 }
 
 // This function will lead to infinite recursion on circular references
-function mergeDeep(target, source) {
-  const output = { ...target };
+function mergeDeep(target: ConfigObject, source: ConfigObject): ConfigObject {
+  const output: ConfigObject = { ...target };
   if (isObject(target) && isObject(source)) {
     Object.keys(source).forEach(key => {
       if (isObject(source[key])) {
         if (!(key in target)) Object.assign(output, { [key]: source[key] });
-        else output[key] = mergeDeep(target[key], source[key]);
+        else
+          output[key] = mergeDeep(
+            target[key] as ConfigObject,
+            source[key] as ConfigObject
+          );
       } else {
         Object.assign(output, { [key]: source[key] });
       }
@@ -105,18 +112,21 @@ function mergeDeep(target, source) {
   return output;
 }
 
-function loadYamlFile(configDirectory, profile) {
+function loadYamlFile(configDirectory: string, profile: string): ConfigObject {
   const filePath = path.join(configDirectory, `app.${profile}.config.yaml`);
-  return yaml.load(fs.readFileSync(filePath, 'utf8'));
+  return yaml.load(fs.readFileSync(filePath, 'utf8')) as ConfigObject;
 }
 
 // This function will lead to an infinite loop on circular references
-function loadConfiguration(configDirectory, profile) {
+function loadConfiguration(
+  configDirectory: string,
+  profile: string
+): ConfigObject {
   const toLoadStack = [profile];
-  const toProcessStack = [];
+  const toProcessStack: ConfigObject[] = [];
 
   while (toLoadStack.length) {
-    const currentProfile = toLoadStack.shift();
+    const currentProfile = toLoadStack.shift() as string;
     const currentConfig = loadYamlFile(configDirectory, currentProfile);
     toProcessStack.unshift(currentConfig);
 
@@ -126,7 +136,9 @@ function loadConfiguration(configDirectory, profile) {
           `Include field must be an array in profile: ${profile}!`
         );
       }
-      toLoadStack.unshift(...currentConfig.include.reverse());
+      toLoadStack.unshift(
+        ...(currentConfig.include as string[]).slice().reverse()
+      );
     }
   }
   return toProcessStack.reduce((acc, current) => mergeDeep(acc, current));

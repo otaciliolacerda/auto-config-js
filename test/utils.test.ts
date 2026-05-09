@@ -4,9 +4,13 @@ const mockReadFileSync = jest.fn();
 const mockJoin = jest.fn((...args) => args.join('/'));
 const mockYamlLoad = jest.fn();
 
-jest.unstable_mockModule('fs', () => ({ default: { readFileSync: mockReadFileSync } }));
+jest.unstable_mockModule('fs', () => ({
+  default: { readFileSync: mockReadFileSync },
+}));
 jest.unstable_mockModule('path', () => ({ default: { join: mockJoin } }));
-jest.unstable_mockModule('js-yaml', () => ({ default: { load: mockYamlLoad } }));
+jest.unstable_mockModule('js-yaml', () => ({
+  default: { load: mockYamlLoad },
+}));
 
 const {
   getPropertyCaseInsensitive,
@@ -64,12 +68,12 @@ describe('setPropertyCaseInsensitive', () => {
   });
 
   it('should fail if data types do not match', () => {
-    expect(() =>
-      setPropertyCaseInsensitive({ a: 1 }, 'a', 'true')
-    ).toThrow(/Number expected for property {a}, got {true}/);
-    expect(() =>
-      setPropertyCaseInsensitive({ a: false }, 'a', '1')
-    ).toThrow(/Value true\/false expected for property {a}, got {1}/);
+    expect(() => setPropertyCaseInsensitive({ a: 1 }, 'a', 'true')).toThrow(
+      /Number expected for property {a}, got {true}/
+    );
+    expect(() => setPropertyCaseInsensitive({ a: false }, 'a', '1')).toThrow(
+      /Value true\/false expected for property {a}, got {1}/
+    );
   });
 
   it('should override numbers correctly', () => {
@@ -243,7 +247,10 @@ describe('loadConfiguration', () => {
 
   it('should load config with multiple includes', () => {
     mockYamlLoad
-      .mockReturnValueOnce({ myApp: 'mock', include: ['subProfile', 'subProfile2'] })
+      .mockReturnValueOnce({
+        myApp: 'mock',
+        include: ['subProfile', 'subProfile2'],
+      })
       .mockReturnValueOnce({ test: 1 })
       .mockReturnValueOnce({ mock: 2 });
 
@@ -271,11 +278,22 @@ describe('loadConfiguration', () => {
 
   it('should load respect merge priority', () => {
     mockYamlLoad
-      .mockReturnValueOnce({ myApp: 'root', include: ['subProfile', 'subProfile3'] })
-      .mockReturnValueOnce({ myApp: 'subProfile3', test: 'subProfile3', include: ['subProfile4', 'subProfile5'] })
+      .mockReturnValueOnce({
+        myApp: 'root',
+        include: ['subProfile', 'subProfile3'],
+      })
+      .mockReturnValueOnce({
+        myApp: 'subProfile3',
+        test: 'subProfile3',
+        include: ['subProfile4', 'subProfile5'],
+      })
       .mockReturnValueOnce({ myApp: 'subProfile5' })
       .mockReturnValueOnce({ myApp: 'subProfile4' })
-      .mockReturnValueOnce({ myApp: 'subProfile', test: 'test', include: ['subProfile2'] })
+      .mockReturnValueOnce({
+        myApp: 'subProfile',
+        test: 'test',
+        include: ['subProfile2'],
+      })
       .mockReturnValueOnce({ myApp: 'subProfile2' });
 
     const mockPath = 'mockPath';
@@ -285,11 +303,35 @@ describe('loadConfiguration', () => {
       include: expect.anything(),
     });
 
-    expect(mockJoin).toHaveBeenNthCalledWith(1, mockPath, 'app.mockProfile.config.yaml');
-    expect(mockJoin).toHaveBeenNthCalledWith(2, mockPath, 'app.subProfile3.config.yaml');
-    expect(mockJoin).toHaveBeenNthCalledWith(3, mockPath, 'app.subProfile5.config.yaml');
-    expect(mockJoin).toHaveBeenNthCalledWith(4, mockPath, 'app.subProfile4.config.yaml');
-    expect(mockJoin).toHaveBeenNthCalledWith(5, mockPath, 'app.subProfile.config.yaml');
-    expect(mockJoin).toHaveBeenNthCalledWith(6, mockPath, 'app.subProfile2.config.yaml');
+    expect(mockJoin).toHaveBeenNthCalledWith(
+      1,
+      mockPath,
+      'app.mockProfile.config.yaml'
+    );
+    expect(mockJoin).toHaveBeenNthCalledWith(
+      2,
+      mockPath,
+      'app.subProfile3.config.yaml'
+    );
+    expect(mockJoin).toHaveBeenNthCalledWith(
+      3,
+      mockPath,
+      'app.subProfile5.config.yaml'
+    );
+    expect(mockJoin).toHaveBeenNthCalledWith(
+      4,
+      mockPath,
+      'app.subProfile4.config.yaml'
+    );
+    expect(mockJoin).toHaveBeenNthCalledWith(
+      5,
+      mockPath,
+      'app.subProfile.config.yaml'
+    );
+    expect(mockJoin).toHaveBeenNthCalledWith(
+      6,
+      mockPath,
+      'app.subProfile2.config.yaml'
+    );
   });
 });
