@@ -3,8 +3,20 @@
   "version": "0.0.0",
   "description": "Hierarchical NodeJS configuration with Yaml files, environment variables and config merging.",
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    }
+  },
   "files": [
     "dist"
   ],
@@ -39,7 +51,7 @@
     "js-yaml": "^4.1.1"
   },
   "scripts": {
-    "build": "tsc --project tsconfig.build.json",
+    "build": "tsc --project tsconfig.build.json && tsc --project tsconfig.build.cjs.json && node -e \"require('fs').writeFileSync('dist/cjs/package.json', JSON.stringify({type:'commonjs'},null,2))\"",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "lint": "eslint --fix",
