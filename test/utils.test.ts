@@ -1,4 +1,4 @@
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockReadFileSync = vi.fn();
 const mockJoin = vi.fn((...args: string[]) => args.join('/'));
