@@ -5,11 +5,16 @@
 
 version: 2
 updates:
-  - package-ecosystem: "npm" # Replace with your package manager (e.g., pip, cargo, gomod)
+  - package-ecosystem: "npm" # Replace with your package manager
     directory: "/"
     schedule:
       interval: "weekly"
     commit-message:
-      prefix: "fix"           # Uses "fix" for production dependencies
-      prefix-development: "chore" # Uses "chore" for dev dependencies
-      include: "scope"       # Includes "(deps)" or "(deps-dev)" as the scope
+      prefix: "fix"
+      prefix-development: "chore"
+      include: "scope"
+    # Group all dependencies into a single PR
+    groups:
+      all-dependencies:
+        patterns:
+          - "*" # Matches every package name
