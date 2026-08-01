@@ -1,8 +1,8 @@
+import type { ConfigObject, InitOptions } from './types.js';
 import {
   loadConfiguration,
   overrideConfigValuesFromSystemVariables,
 } from './utils.js';
-import type { InitOptions, ConfigObject } from './types.js';
 
 let config: ConfigObject | undefined;
 

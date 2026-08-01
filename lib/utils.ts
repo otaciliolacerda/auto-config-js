@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import * as yaml from 'js-yaml';
 import type { ConfigObject } from './types.js';
 
@@ -78,7 +78,7 @@ function overrideConfigValuesFromSystemVariables(
       currentPropValue = getPropertyCaseInsensitive(currentObj, currentProp);
     } while (tokens.length && isObject(currentPropValue));
 
-    if (currentObj! && currentProp! && currentObj[currentProp]) {
+    if (currentObj && currentProp && currentObj[currentProp]) {
       setPropertyCaseInsensitive(
         currentObj,
         currentProp,
@@ -141,11 +141,11 @@ function loadConfiguration(
 }
 
 export {
-  isObject,
   getPropertyCaseInsensitive,
-  setPropertyCaseInsensitive,
-  overrideConfigValuesFromSystemVariables,
-  mergeDeep,
-  loadYamlFile,
+  isObject,
   loadConfiguration,
+  loadYamlFile,
+  mergeDeep,
+  overrideConfigValuesFromSystemVariables,
+  setPropertyCaseInsensitive,
 };
