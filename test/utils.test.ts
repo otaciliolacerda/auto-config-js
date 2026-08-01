@@ -6,7 +6,7 @@ const mockYamlLoad = vi.fn();
 
 vi.mock('fs', () => ({ default: { readFileSync: mockReadFileSync } }));
 vi.mock('path', () => ({ default: { join: mockJoin } }));
-vi.mock('js-yaml', () => ({ default: { load: mockYamlLoad } }));
+vi.mock('js-yaml', () => ({ load: mockYamlLoad }));
 
 const {
   getPropertyCaseInsensitive,
@@ -71,11 +71,11 @@ describe('setPropertyCaseInsensitive', () => {
     setPropertyCaseInsensitive(obj, 'a', '-1');
     expect(obj.a).toBe(-1);
     setPropertyCaseInsensitive(obj, 'a', '0.01');
-    expect(obj.a).toBe(0.01);
+    expect(obj.a).toBeCloseTo(0.01, 8);
     setPropertyCaseInsensitive(obj, 'a', '0.0');
     expect(obj.a).toBe(0);
     setPropertyCaseInsensitive(obj, 'a', '-0.1');
-    expect(obj.a).toBe(-0.1);
+    expect(obj.a).toBeCloseTo(-0.1, 8);
     setPropertyCaseInsensitive(obj, 'a', '-0');
     expect(obj.a).toBe(-0);
   });

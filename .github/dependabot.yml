@@ -5,16 +5,16 @@
 
 version: 2
 updates:
-  - package-ecosystem: "npm" # Replace with your package manager
-    directory: "/"
+  - package-ecosystem: 'npm' # Replace with your package manager
+    directory: '/'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     commit-message:
-      prefix: "fix"
-      prefix-development: "chore"
-      include: "scope"
+      prefix: 'fix'
+      prefix-development: 'chore'
+      include: 'scope'
     # Group all dependencies into a single PR
     groups:
       all-dependencies:
         patterns:
-          - "*" # Matches every package name
+          - '*' # Matches every package name
