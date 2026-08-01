@@ -44,15 +44,16 @@
     "eslint-plugin-sonarjs": "^4.0.3",
     "globals": "^17.6.0",
     "prettier": "^3.8.3",
-    "typescript": "^7.0.2",
+    "typescript": "^6.0.3",
+    "typescript-7": "npm:typescript@^7.0.2",
     "vitest": "^4.1.5"
   },
   "dependencies": {
     "js-yaml": "^5.2.2"
   },
   "scripts": {
-    "build": "tsc --project tsconfig.build.json && tsc --project tsconfig.build.cjs.json && node -e \"require('fs').writeFileSync('dist/cjs/package.json', JSON.stringify({type:'commonjs'},null,2))\"",
-    "typecheck": "tsc --noEmit",
+    "build": "node node_modules/typescript-7/bin/tsc --project tsconfig.build.json && node node_modules/typescript-7/bin/tsc --project tsconfig.build.cjs.json && node -e \"require('fs').writeFileSync('dist/cjs/package.json', JSON.stringify({type:'commonjs'},null,2))\"",
+    "typecheck": "node node_modules/typescript-7/bin/tsc --noEmit",
     "test": "vitest run",
     "lint": "eslint --fix",
     "prettier:check": "prettier --check --ignore-path .gitignore .",

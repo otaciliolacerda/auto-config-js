@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 import type { ConfigObject } from './types.js';
 
 function isObject(item: unknown): item is ConfigObject {
